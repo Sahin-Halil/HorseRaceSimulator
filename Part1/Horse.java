@@ -21,11 +21,11 @@ public class Horse
      */
     public Horse(char horseSymbol, String horseName, double horseConfidence)
     {
-        horseName = horseName;
-        horseConfidence = horseConfidence;
-        distanceTravelled = 0;
-        horseFallen = false;
-        horseSymbol = horseSymbol;
+        this.horseName = horseName;
+        this.horseConfidence = horseConfidence;
+        this.distanceTravelled = 0;
+        this.horseFallen = false;
+        this.horseSymbol = horseSymbol;
     }
     
     
@@ -53,7 +53,7 @@ public class Horse
     
     public char getSymbol()
     {
-        
+        return horseSymbol;
     }
     
     public void goBackToStart()
@@ -78,7 +78,7 @@ public class Horse
     
     public void setSymbol(char newSymbol)
     {
-        
+        horseSymbol = newSymbol;
     }
     
 }
