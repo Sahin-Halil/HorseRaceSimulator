@@ -5,7 +5,7 @@ import java.lang.Math;
  * A three-horse race, each horse running in its own lane
  * for a given distance
  * 
- * @author McFarewell
+ * @author Sahin Halil
  * @version 1.0
  */
 public class Race
@@ -15,21 +15,6 @@ public class Race
     private Horse lane2Horse;
     private Horse lane3Horse;
 
-    public static void main(String[] args)
-    {
-        Horse lane1Horse = new Horse('X', "Horse1", 0.5);
-        Horse lane2Horse = new Horse('Y', "Horse2", 0.7);
-        Horse lane3Horse = new Horse('Z', "Horse3", 0.9);
-
-        Race theRace = new Race(10);
-
-        theRace.addHorse(lane1Horse, 1);
-        theRace.addHorse(lane2Horse, 2);    
-        theRace.addHorse(lane3Horse, 3);    
-
-        theRace.startRace();
-    }
-    
     /**
      * Constructor for objects of class Race
      * Initially there are no horses in the lanes
@@ -150,11 +135,14 @@ public class Race
     {
         if (theHorse.getDistanceTravelled() == raceLength)
         {
+            System.out.println("Horse " + theHorse.getName() + " has won and travelled " + theHorse.getDistanceTravelled() + " metres");
+
             return true;
         }
-        else{
+        else
+        {
             return false;
-        } 
+        }
     }
     
     /***
@@ -234,18 +222,3 @@ public class Race
         }
     }
 }
-
-
-//Problems
-// if all horses die then the program continues forever
-// no validation to make sure user cannot enter a negative number for the distance
-// fix horse class when horse dies they need to be bought back to life in getbacktostart method
-// If you dont have 3 horses, the program wont run
-// you can have the same horse in multiple lanes
-// if you set the confidence to 0, the horse will never move
-// Class to change confidence of horse after each race
-
-// Improvements
-// raceWonBy method can be done in one line
-// multiplePrint method needs to use a for loop not a while loop
-// use a horses array
