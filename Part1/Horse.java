@@ -38,7 +38,7 @@ public class Horse
     
     public double getConfidence()
     {
-        
+        return horseConfidence;
     }
     
     public int getDistanceTravelled()
@@ -73,7 +73,7 @@ public class Horse
 
     public void setConfidence(double newConfidence)
     {
-        
+        horseConfidence = newConfidence;
     }
     
     public void setSymbol(char newSymbol)
