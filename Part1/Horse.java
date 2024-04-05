@@ -59,6 +59,7 @@ public class Horse
     public void goBackToStart()
     {
         distanceTravelled = 0;
+        horseFallen = false;
     }
     
     public boolean hasFallen()
