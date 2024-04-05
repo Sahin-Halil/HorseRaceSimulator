@@ -48,7 +48,7 @@ public class Horse
     
     public String getName()
     {
-        
+        return horseName;
     }
     
     public char getSymbol()
@@ -68,7 +68,7 @@ public class Horse
 
     public void moveForward()
     {
-        
+        distanceTravelled++;
     }
 
     public void setConfidence(double newConfidence)
