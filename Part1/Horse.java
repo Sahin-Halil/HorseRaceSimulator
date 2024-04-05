@@ -33,7 +33,7 @@ public class Horse
     //Other methods of class Horse
     public void fall()
     {
-        
+        horseFallen = true; 
     }
     
     public double getConfidence()
@@ -63,7 +63,7 @@ public class Horse
     
     public boolean hasFallen()
     {
-        
+        return horseFallen;
     }
 
     public void moveForward()
