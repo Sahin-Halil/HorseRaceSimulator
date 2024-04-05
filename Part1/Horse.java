@@ -43,7 +43,7 @@ public class Horse
     
     public int getDistanceTravelled()
     {
-        
+        return distanceTravelled;
     }
     
     public String getName()
@@ -58,7 +58,7 @@ public class Horse
     
     public void goBackToStart()
     {
-        
+        distanceTravelled = 0;
     }
     
     public boolean hasFallen()
