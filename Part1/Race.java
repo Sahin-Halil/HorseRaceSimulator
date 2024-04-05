@@ -75,6 +75,11 @@ public class Race
         while (!finished)
         {
             //move each horse
+            if (lane1Horse.hasFallen() && lane2Horse.hasFallen() && lane3Horse.hasFallen())
+            {
+                System.out.println("All horses have fallen");
+                break;
+            }
             moveHorse(lane1Horse);
             moveHorse(lane2Horse);
             moveHorse(lane3Horse);
