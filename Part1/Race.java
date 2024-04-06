@@ -1,5 +1,6 @@
 import java.util.concurrent.TimeUnit;
 import java.lang.Math;
+import java.util.ArrayList;
 
 /**
  * A three-horse race, each horse running in its own lane
@@ -10,10 +11,8 @@ import java.lang.Math;
  */
 public class Race
 {
+    private Horse[] horseList;
     private int raceLength;
-    private Horse lane1Horse;
-    private Horse lane2Horse;
-    private Horse lane3Horse;
 
     /**
      * Constructor for objects of class Race
@@ -21,13 +20,11 @@ public class Race
      * 
      * @param distance the length of the racetrack (in metres/yards...)
      */
-    public Race(int distance)
+    public Race(int distance, int laneNumber)
     {
         // initialise instance variables
         raceLength = distance;
-        lane1Horse = null;
-        lane2Horse = null;
-        lane3Horse = null;
+        horseList = new Horse[laneNumber];
     }
     
     /**
@@ -38,17 +35,9 @@ public class Race
      */
     public void addHorse(Horse theHorse, int laneNumber)
     {
-        if (laneNumber == 1)
+        if (laneNumber <= horseList.length && laneNumber > 0)
         {
-            lane1Horse = theHorse;
-        }
-        else if (laneNumber == 2)
-        {
-            lane2Horse = theHorse;
-        }
-        else if (laneNumber == 3)
-        {
-            lane3Horse = theHorse;
+            horseList[laneNumber-1] = theHorse;
         }
         else
         {
@@ -64,44 +53,74 @@ public class Race
      */
     public void startRace()
     {
+        for (Horse horse : horseList) {
+            if (horse != null){
+                System.out.println(horse.getName());
+            }
+            else{
+                System.out.println("Empty lane");
+            }
+        }
+        int counter = 0;
+        for (Horse horse : horseList) {
+            if (horse != null) {
+                counter ++;
+            }
+        }
+        if (counter < 2)
+        {
+            System.out.println("Inadequate number of horses to start the race");
+            return;
+        }
+        
         //declare a local variable to tell us when the race is finished
         boolean finished = false;
         
         //reset all the lanes (all horses not fallen and back to 0). 
-        lane1Horse.goBackToStart();
-        lane2Horse.goBackToStart();
-        lane3Horse.goBackToStart();
+        for (Horse horse : horseList) {
+            if (horse != null){
+                horse.goBackToStart();
+            }
+        }
                       
         while (!finished)
         {
-            //move each horse
-            if (lane1Horse.hasFallen() && lane2Horse.hasFallen() && lane3Horse.hasFallen())
-            {
-                System.out.println("All horses have fallen");
-                break;
+            //check if all horses have fallen
+            boolean allHorsesFallen = true;
+            for (Horse horse : horseList) {
+                if (horse != null && !horse.hasFallen()) {
+                    allHorsesFallen = false;
+                    break;
+                }
             }
-            moveHorse(lane1Horse);
-            moveHorse(lane2Horse);
-            moveHorse(lane3Horse);
-                        
-            //print the race positions
+            //move each horse
+            for (Horse horse : horseList) {
+                if (horse != null){
+                    moveHorse(horse);
+                }
+            }
+
             printRace();
             
             //if any of the three horses has won the race is finished
-            boolean condition1 = raceWonBy(lane1Horse);
-            boolean condition2 = raceWonBy(lane2Horse);
-            boolean condition3 = raceWonBy(lane3Horse);
-
-            if (condition1 || condition2 || condition3)
-            {
-                finished = true;
+            for (Horse horse : horseList) {
+                if (horse != null && raceWonBy(horse)){
+                    finished = true;
+                }
             }
-           
+
             //wait for 100 milliseconds
             try{ 
                 TimeUnit.MILLISECONDS.sleep(100);
             }catch(Exception e){}
+
+            //end program if all horses have fallen
+            if (allHorsesFallen) {
+                System.out.println("All horses have fallen");
+                break;
+            }
         }
+
     }
     
     /**
@@ -164,14 +183,10 @@ public class Race
         multiplePrint('=',raceLength+3); //top edge of track
         System.out.println();
         
-        printLane(lane1Horse);
-        System.out.println();
-        
-        printLane(lane2Horse);
-        System.out.println();
-        
-        printLane(lane3Horse);
-        System.out.println();
+        for (Horse horse : horseList) {
+            printLane(horse);
+            System.out.println();
+        }
         
         multiplePrint('=',raceLength+3); //bottom edge of track
         System.out.println();    
@@ -187,8 +202,13 @@ public class Race
     {
         //calculate how many spaces are needed before
         //and after the horse
-        int spacesBefore = theHorse.getDistanceTravelled();
-        int spacesAfter = raceLength - theHorse.getDistanceTravelled();
+        int spacesBefore = raceLength;
+        int spacesAfter = 1;
+        if (theHorse != null)
+        {
+            spacesBefore = theHorse.getDistanceTravelled();
+            spacesAfter = raceLength - theHorse.getDistanceTravelled();
+        }
         
         //print a | for the beginning of the lane
         System.out.print('|');
@@ -198,13 +218,15 @@ public class Race
         
         //if the horse has fallen then print dead
         //else print the horse's symbol
-        if(theHorse.hasFallen())
-        {
-            System.out.print('\u2322');
-        }
-        else
-        {
-            System.out.print(theHorse.getSymbol());
+        if (theHorse != null){
+            if(theHorse.hasFallen())
+            {
+                System.out.print('\u2322');
+            }
+            else
+            {
+                System.out.print(theHorse.getSymbol());
+            }
         }
         
         //print the spaces after the horse
