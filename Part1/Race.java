@@ -44,9 +44,20 @@ public class Race
      */
     public void addHorse(Horse theHorse, int laneNumber)
     {
+        boolean added = false;
         if (laneNumber <= horseList.length && laneNumber > 0)
         {
-            horseList[laneNumber-1] = theHorse;
+            for (Horse horse : horseList) {
+                if (horse != null && (horse.getName().equals(theHorse.getName()) || horse.getSymbol() == theHorse.getSymbol()))
+                {
+                    System.out.println("Cannot add horse to lane " + laneNumber + " because horse " + horse.getName() + " is already in");
+                    added = true;
+                }
+            }
+            if (added == false)
+            {
+                horseList[laneNumber - 1] = theHorse;
+            }
         }
         else
         {
