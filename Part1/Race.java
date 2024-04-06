@@ -62,14 +62,7 @@ public class Race
      */
     public void startRace()
     {
-        for (Horse horse : horseList) {
-            if (horse != null){
-                System.out.println(horse.getName());
-            }
-            else{
-                System.out.println("Empty lane");
-            }
-        }
+        //check if there are enough horses to start the race
         int counter = 0;
         for (Horse horse : horseList) {
             if (horse != null) {
@@ -157,6 +150,7 @@ public class Race
             //so if you double the confidence, the probability that it will fall is *2
             if (Math.random() < (0.1*theHorse.getConfidence()*theHorse.getConfidence()))
             {
+                theHorse.setConfidence(theHorse.getConfidence() - 0.05);
                 theHorse.fall();
             }
         }
@@ -173,6 +167,8 @@ public class Race
         if (theHorse.getDistanceTravelled() == raceLength)
         {
             System.out.println("Horse " + theHorse.getName() + " has won and travelled " + theHorse.getDistanceTravelled() + " metres");
+
+            theHorse.setConfidence(theHorse.getConfidence() + 0.05);
 
             return true;
         }
