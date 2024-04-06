@@ -1,6 +1,5 @@
 import java.util.concurrent.TimeUnit;
 import java.lang.Math;
-import java.util.ArrayList;
 
 /**
  * A three-horse race, each horse running in its own lane
@@ -23,6 +22,16 @@ public class Race
     public Race(int distance, int laneNumber)
     {
         // initialise instance variables
+        if (distance <= 0)
+        {
+            System.err.println("not enough distance");
+            return;
+        }
+        if (laneNumber <= 0)
+        {
+            System.err.println("not enough lanes");
+            return;
+        }
         raceLength = distance;
         horseList = new Horse[laneNumber];
     }
@@ -245,11 +254,9 @@ public class Race
      */
     private void multiplePrint(char aChar, int times)
     {
-        int i = 0;
-        while (i < times)
+        for (int i = 0; i < times; i++)
         {
             System.out.print(aChar);
-            i = i + 1;
         }
     }
 }
