@@ -22,7 +22,13 @@ public class Horse
     public Horse(char horseSymbol, String horseName, double horseConfidence)
     {
         this.horseName = horseName;
-        this.horseConfidence = horseConfidence;
+        if (horseConfidence <= 0 || horseConfidence > 1)
+        {
+            this.horseConfidence = 0.05;
+        }
+        else{
+            this.horseConfidence = horseConfidence;
+        }
         this.distanceTravelled = 0;
         this.horseFallen = false;
         this.horseSymbol = horseSymbol;
@@ -74,7 +80,13 @@ public class Horse
 
     public void setConfidence(double newConfidence)
     {
-        horseConfidence = newConfidence;
+        if (newConfidence <= 0 || newConfidence > 1)
+        {
+            horseConfidence = 0.05;
+        }
+        else{
+            horseConfidence = newConfidence;
+        }
     }
     
     public void setSymbol(char newSymbol)
