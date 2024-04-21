@@ -1,3 +1,4 @@
+//For GUI testing
 public class RaceGUITest {
         public static void main(String[] args) {
             NewHorse horse1 = new NewHorse('1', "Horse1", 0.5);
