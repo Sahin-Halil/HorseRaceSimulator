@@ -1,6 +1,7 @@
 import java.util.concurrent.TimeUnit;
 import java.lang.Math;
-
+import javax.swing.*;
+import java.awt.*;
 /**
  * A three-horse race, each horse running in its own lane
  * for a given distance
@@ -12,6 +13,9 @@ public class RaceGUI
 {
     private NewHorse[] horseList;
     private int raceLength;
+
+    // GUI components as fields
+    private JFrame mainFrame;
 
     /**
      * Constructor for objects of class Race
@@ -64,6 +68,18 @@ public class RaceGUI
             System.out.println("Cannot add horse to lane " + laneNumber + " because there is no such lane");
         }
     }
+
+    // Method to initialise and show the GUI
+    public void initialiseGUI() {
+        // Create the main frame
+        mainFrame = new JFrame("Horse Racing Simulator");
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setLayout(new BorderLayout());
+
+        // Set the size of the main frame and make it visible
+        mainFrame.setSize(800, 600);
+        mainFrame.setVisible(true);
+    }
     
     /**
      * Start the race
@@ -95,7 +111,11 @@ public class RaceGUI
                 horse.goBackToStart();
             }
         }
-                      
+        
+
+        // Initialise the GUI
+        initialiseGUI();
+
         while (!finished)
         {
             //check if all horses have fallen
@@ -133,7 +153,6 @@ public class RaceGUI
                 break;
             }
         }
-
     }
     
     /**
