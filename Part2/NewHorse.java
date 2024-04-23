@@ -80,9 +80,13 @@ public class NewHorse
 
     public void setConfidence(double newConfidence)
     {
-        if (newConfidence <= 0 || newConfidence > 1)
+        if (newConfidence <= 0)
         {
             horseConfidence = 0.05;
+        }
+        else if (newConfidence > 1)
+        {
+            horseConfidence = 1;
         }
         else{
             horseConfidence = newConfidence;
