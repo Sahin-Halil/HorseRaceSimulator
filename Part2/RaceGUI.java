@@ -1,11 +1,6 @@
 import java.util.concurrent.TimeUnit;
-import java.lang.Math;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import javax.swing.border.Border;
 import javax.swing.BorderFactory;
 /**
@@ -40,8 +35,8 @@ public class RaceGUI
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setLayout(new BorderLayout());
         
-        // New frame for track customisation
-        trackCustomisation();
+        // New JDialog for track customisation
+        showTrackCustomisation();
         
         // Initialise panels
         mainFrame.add(new JButton("Start Button"), BorderLayout.SOUTH);
@@ -81,79 +76,19 @@ public class RaceGUI
         }
     }
 
-    // Method to create a dialog for track customisation
-    public void trackCustomisation() {
-        // track customisation
-        JDialog trackCustomisationDialog = new JDialog(mainFrame, "Track Customisation", true);
-        trackCustomisationDialog.setLayout(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
-        Dimension preferredSize = new Dimension(500, 225); 
-
-        // Add slider for the number of tracks
-        constraints.gridy = 0;
-        trackCustomisationDialog.add(new JLabel("Number of Tracks:"), constraints);
-        JSlider numTracksSlider = new JSlider(JSlider.HORIZONTAL, 2, 10, 5);
-        numTracksSlider.setMajorTickSpacing(1);
-        numTracksSlider.setPaintTicks(true);
-        numTracksSlider.setPaintLabels(true);
-        numTracksSlider.setPreferredSize(preferredSize); 
-        constraints.gridy = 1;
-        trackCustomisationDialog.add(numTracksSlider, constraints);
-
-        // Add slider for the track length
-        constraints.gridy = 2;
-        trackCustomisationDialog.add(new JLabel("Track Length:"), constraints);
-        JSlider trackLengthSlider = new JSlider(JSlider.HORIZONTAL, 10, 40, 25);
-        trackLengthSlider.setMajorTickSpacing(10);
-        trackLengthSlider.setPaintTicks(true);
-        trackLengthSlider.setPaintLabels(true);
-        trackLengthSlider.setPreferredSize(preferredSize); 
-        constraints.gridy = 3;
-        trackCustomisationDialog.add(trackLengthSlider, constraints);
-
-        // Add color chooser for the track color
-        constraints.gridy = 4;
-        trackCustomisationDialog.add(new JLabel("Track Colour:"), constraints);
-        JColorChooser trackColourChooser = new JColorChooser();
-        trackColourChooser.setPreferredSize(preferredSize); 
-        constraints.gridy = 5;
-        trackCustomisationDialog.add(trackColourChooser, constraints);
-            
-        trackCustomisationDialog.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                    System.exit(0);
-            }
-        });
-
-        // Add a "Save" button to the dialog
-        JButton saveButton = new JButton("Save");
-        constraints.gridy = 6; 
-        trackCustomisationDialog.add(saveButton, constraints);
-        
-        
-        // Add an ActionListener to the "Save" button
-        saveButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Save the values from the sliders and color chooser
-                raceLength = trackLengthSlider.getValue(); 
-                horseList = new NewHorse[numTracksSlider.getValue()]; 
-                Color trackColor = trackColourChooser.getColor(); 
-                
-                // Call the trackPanel method with the selected color as a parameter
-                TrackPanel(trackColor); 
-                
-                // Close the customisation dialog
-                trackCustomisationDialog.dispose();
-            }
-        });
-        
-        // Set the size of the dialog and make it visible
-        trackCustomisationDialog.setSize(1500, 1000);
-        trackCustomisationDialog.setVisible(true);
+    public void showTrackCustomisation() {
+        TrackCustomisationDialog dialog = new TrackCustomisationDialog(mainFrame);
+        dialog.setVisible(true);
+        // After the dialog is closed, you can retrieve the values
+        raceLength = dialog.getRaceLength();
+        horseList = dialog.getHorseList();
+        Color trackColour = dialog.getTrackColor();
+        // Customise the mainframe with the selected color as a parameter
+        customiseMainFrame(trackColour);
     }
 
-    // Create the track panel
-    public void TrackPanel(Color trackColor) {
+    // Method to customise the main frame with the selected track color
+    public void customiseMainFrame(Color trackColour) {
         NewHorse horse1 = new NewHorse('1', "Horse1", 0.5);
         NewHorse horse2 = new NewHorse('2', "Horse2", 0.5);
         NewHorse horse3 = new NewHorse('3', "Horse3", 0.5);
@@ -183,7 +118,7 @@ public class RaceGUI
         for (int i = 0; i < horseList.length; i++) {
             JPanel rowPanel = new JPanel();
             rowPanel.setLayout(new BorderLayout());
-            rowPanel.setBackground(trackColor);
+            rowPanel.setBackground(trackColour);
 
 
             // Create a label with the horse's symbol
