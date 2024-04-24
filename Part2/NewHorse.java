@@ -13,7 +13,6 @@ public class NewHorse
     private int distanceTravelled;
     private boolean horseFallen;
     private char horseSymbol;
-    
       
     //Constructor of class Horse
     /**
@@ -22,9 +21,13 @@ public class NewHorse
     public NewHorse(char horseSymbol, String horseName, double horseConfidence)
     {
         this.horseName = horseName;
-        if (horseConfidence <= 0 || horseConfidence > 1)
+        if (horseConfidence <= 0)
         {
             this.horseConfidence = 0.05;
+        }
+        else if (horseConfidence > 1)
+        {
+            this.horseConfidence = 1;
         }
         else{
             this.horseConfidence = horseConfidence;
@@ -33,8 +36,6 @@ public class NewHorse
         this.horseFallen = false;
         this.horseSymbol = horseSymbol;
     }
-    
-    
     
     //Other methods of class Horse
     public void fall()
@@ -97,5 +98,4 @@ public class NewHorse
     {
         horseSymbol = newSymbol;
     }
-    
 }

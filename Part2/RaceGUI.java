@@ -17,9 +17,13 @@ public class RaceGUI
 
     // GUI components as fields
     private JFrame mainFrame;
-    JDialog trackCustomisationDialog;
     private JPanel trackPanel;
     private JLabel[] horseLabels;
+
+    // Objects for the customisation dialogs
+    private TrackCustomisationDialog trackDialog;
+    private HorseCustomisationDialog horseDialog;
+
 
     /**
      * Constructor for objects of class Race
@@ -76,40 +80,46 @@ public class RaceGUI
         }
     }
 
+    // Method to show the track customisation dialog
     public void showTrackCustomisation() {
-        TrackCustomisationDialog dialog = new TrackCustomisationDialog(mainFrame);
-        dialog.setVisible(true);
+        
+        trackDialog = new TrackCustomisationDialog(mainFrame);
+        trackDialog.setVisible(true);
+        
         // After the dialog is closed, you can retrieve the values
-        raceLength = dialog.getRaceLength();
-        horseList = dialog.getHorseList();
-        Color trackColour = dialog.getTrackColor();
+        raceLength = trackDialog.getRaceLength();
+        horseList = trackDialog.getHorseList();
+        Color trackColour = trackDialog.getTrackColour();
+        
         // Customise the mainframe with the selected color as a parameter
         customiseMainFrame(trackColour);
     }
 
-    // Method to customise the main frame with the selected track color
+    // Method to customise the main frame
     public void customiseMainFrame(Color trackColour) {
-        NewHorse horse1 = new NewHorse('1', "Horse1", 0.5);
-        NewHorse horse2 = new NewHorse('2', "Horse2", 0.5);
-        NewHorse horse3 = new NewHorse('3', "Horse3", 0.5);
-        NewHorse horse4 = new NewHorse('4', "Horse4", 0.5);
-        NewHorse horse5 = new NewHorse('5', "Horse5", 0.5);
-        NewHorse horse6 = new NewHorse('6', "Horse6", 0.5);
-        NewHorse horse7 = new NewHorse('7', "Horse7", 0.5);
-        NewHorse horse8 = new NewHorse('8', "Horse8", 0.5);
-        NewHorse horse9 = new NewHorse('9', "Horse9", 0.5);
-        NewHorse horse10 = new NewHorse('0', "Horse10", 0.5);
+        
+        showHorseCustomisation();
+        //NewHorse horse1 = new NewHorse('1', "Horse1", 0.5);
+        //NewHorse horse2 = new NewHorse('2', "Horse2", 0.5);
+        //NewHorse horse3 = new NewHorse('3', "Horse3", 0.5);
+        //NewHorse horse4 = new NewHorse('4', "Horse4", 0.5);
+        //NewHorse horse5 = new NewHorse('5', "Horse5", 0.5);
+        //NewHorse horse6 = new NewHorse('6', "Horse6", 0.5);
+        //NewHorse horse7 = new NewHorse('7', "Horse7", 0.5);
+        //NewHorse horse8 = new NewHorse('8', "Horse8", 0.5);
+        //NewHorse horse9 = new NewHorse('9', "Horse9", 0.5);
+        //NewHorse horse10 = new NewHorse('0', "Horse10", 0.5);
 
-        NewHorse[] horses = {horse1, horse2, horse3, horse4, horse5, horse6, horse7, horse8, horse9, horse10};
+        //NewHorse[] horses = {horse1, horse2, horse3, horse4, horse5, horse6, horse7, horse8, horse9, horse10};
 
-        for (int i = 0; i < horses.length; i++){
-            addHorse(horses[i], i + 1);
-        }
+        //for (int i = 0; i < horses.length; i++){
+            //addHorse(horses[i], i + 1);
+        //}
         trackPanel = new JPanel();
         trackPanel.setLayout(new GridLayout(horseList.length, 1, 0, 5));
 
          // Create a border and set it to the track panel
-        Border border = BorderFactory.createLineBorder(Color.BLACK, 10); // Black border with thickness of 3
+        Border border = BorderFactory.createLineBorder(Color.BLACK, 10); 
         trackPanel.setBorder(border);
         mainFrame.add(trackPanel, BorderLayout.CENTER);
         horseLabels = new JLabel[horseList.length]; 
@@ -119,7 +129,6 @@ public class RaceGUI
             JPanel rowPanel = new JPanel();
             rowPanel.setLayout(new BorderLayout());
             rowPanel.setBackground(trackColour);
-
 
             // Create a label with the horse's symbol
             JLabel laneLabel = new JLabel(String.valueOf(horseList[i].getSymbol()));
@@ -131,6 +140,20 @@ public class RaceGUI
 
             horseLabels[i] = laneLabel; // Store the reference to the label
         }
+    }
+
+    // Method to show the horse customisation dialog
+    public void showHorseCustomisation() {
+        
+        horseDialog = new HorseCustomisationDialog(mainFrame, horseList.length);
+            
+        
+        // After the dialog is closed, you can retrieve the values
+        //NewHorse horse = dialog.getHorse();
+        //int laneNumber = dialog.getLaneNumber();
+        
+        // Add the horse to
+        //addHorse(horse, laneNumber);
     }
     
     /**

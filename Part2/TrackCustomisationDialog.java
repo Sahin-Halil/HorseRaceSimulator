@@ -3,12 +3,12 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class TrackCustomisationDialog extends JDialog {
-    private JSlider numTracksSlider;
+    private JSlider numLanesSlider;
     private JSlider trackLengthSlider;
     private JColorChooser trackColourChooser;
     private int raceLength;
     private NewHorse[] horseList;
-    private Color trackColor;
+    private Color trackColour;
 
     public TrackCustomisationDialog(JFrame parentFrame) {
         super(parentFrame, "Track Customisation", true);
@@ -18,18 +18,18 @@ public class TrackCustomisationDialog extends JDialog {
     private void initialiseComponents() {
         this.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        Dimension preferredSize = new Dimension(500, 225);
+        Dimension preferredSize = new Dimension(700, 225);
 
         // Add slider for the number of tracks
         constraints.gridy = 0;
-        this.add(new JLabel("Number of Tracks:"), constraints);
-        numTracksSlider = new JSlider(JSlider.HORIZONTAL, 2, 10, 5);
-        numTracksSlider.setMajorTickSpacing(1);
-        numTracksSlider.setPaintTicks(true);
-        numTracksSlider.setPaintLabels(true);
-        numTracksSlider.setPreferredSize(preferredSize);
+        this.add(new JLabel("Number of Lanes:"), constraints);
+        numLanesSlider = new JSlider(JSlider.HORIZONTAL, 2, 10, 5);
+        numLanesSlider.setMajorTickSpacing(1);
+        numLanesSlider.setPaintTicks(true);
+        numLanesSlider.setPaintLabels(true);
+        numLanesSlider.setPreferredSize(preferredSize);
         constraints.gridy = 1;
-        this.add(numTracksSlider, constraints);
+        this.add(numLanesSlider, constraints);
 
         // Add slider for the track length
         constraints.gridy = 2;
@@ -60,8 +60,8 @@ public class TrackCustomisationDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 // Save the values from the sliders and color chooser
                 raceLength = trackLengthSlider.getValue();
-                horseList = new NewHorse[numTracksSlider.getValue()];
-                trackColor = trackColourChooser.getColor();
+                horseList = new NewHorse[numLanesSlider.getValue()];
+                trackColour = trackColourChooser.getColor();
 
                 // Close the customisation dialog
                 dispose();
@@ -76,8 +76,8 @@ public class TrackCustomisationDialog extends JDialog {
             }
         });
 
-        // Set the size of the dialog and make it visible
-        this.setSize(1500, 1000);
+        // Set the size of the dialog 
+        this.pack();
     }
 
     public int getRaceLength() {
@@ -88,7 +88,7 @@ public class TrackCustomisationDialog extends JDialog {
         return horseList;
     }
 
-    public Color getTrackColor() {
-        return trackColor;
+    public Color getTrackColour() {
+        return trackColour;
     }
 }
