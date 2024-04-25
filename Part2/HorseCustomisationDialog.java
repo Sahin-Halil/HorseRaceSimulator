@@ -74,7 +74,7 @@ public class HorseCustomisationDialog extends JDialog {
         JLabel accessoriesLabel = new JLabel("Accessories:");
         constraints.gridy = 8;
         this.add(accessoriesLabel, constraints);
-        String[] accessories = {"Ribbon", "Bell", "Flower"};
+        String[] accessories = {"Strike-through", "Italics", "Underline"};
         accessoriesComboBox = new JComboBox<>(accessories);
         accessoriesComboBox.setPreferredSize(preferredSize);
         constraints.gridy = 9;

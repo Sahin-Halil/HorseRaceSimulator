@@ -52,9 +52,16 @@ public class RaceGUI
         // Add action listener to the start button
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                startRaceGUI();
+                SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                    
+                    protected Void doInBackground() throws Exception {
+                        startRaceGUI();
+                        return null;
+                    }
+                };
+                worker.execute();
             }
-        });  
+        });
     
         // Set the size of the main frame, make it visible, and prevent resizing
         mainFrame.setSize(raceLength * 50 + 100, 600);
@@ -113,13 +120,13 @@ public class RaceGUI
         
         // Determine text style based on accessory
         String textStyle = "";
-        if (accessory.equals("Ribbon")) {
+        if (accessory.equals("Strike-through")) {
             textStyle = "text-decoration:line-through;";
         } 
-        else if (accessory.equals("Bell")) {
+        else if (accessory.equals("Italics")) {
             textStyle = "font-style:italic;";
         } 
-        else if (accessory.equals("Flower")) {
+        else if (accessory.equals("Underline")) {
             textStyle = "text-decoration:underline;";
         }
         
@@ -189,6 +196,7 @@ public class RaceGUI
             }
         }
 
+        
         while (!finished)
         {
             //check if all horses have fallen
@@ -199,10 +207,10 @@ public class RaceGUI
                     break;
                 }
             }
-
+            
             //move each horse
             moveHorse();
-
+            
             //printRace();
             
             //if any of the horses has won the race is finished
@@ -211,18 +219,21 @@ public class RaceGUI
                     finished = true;
                 }
             }
-
+            
             //wait for 100 milliseconds
             try{ 
                 TimeUnit.MILLISECONDS.sleep(100);
             }catch(Exception e){}
-
+            
             //end program if all horses have fallen
             if (allHorsesFallen) {
                 System.out.println("All horses have fallen");
                 JOptionPane.showMessageDialog(null, "All horses have fallen.");
                 break;
             }
+        }
+        for (int i = 0; i < horseList.length; i++) {
+            addCustomisationtoHorse(horseLabels[i], horseList[i]);
         }
     }
     
@@ -269,7 +280,7 @@ public class RaceGUI
         {
             System.out.println("Horse " + theHorse.getName() + " has won and travelled " + theHorse.getDistanceTravelled() + " metres");
 
-            JOptionPane.showMessageDialog(null, theHorse.getName() + " has won!");
+            JOptionPane.showMessageDialog(null, theHorse.getName() + " has won and travelled " + theHorse.getDistanceTravelled() + " metres.");
 
             theHorse.setConfidence(theHorse.getConfidence() + 0.05);
 
@@ -363,7 +374,7 @@ public class RaceGUI
         
         RaceGUI race = new RaceGUI();
 
-        race.startRaceGUI();
+        //race.startRaceGUI();
         
     }
 }
