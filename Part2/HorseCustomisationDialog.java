@@ -14,9 +14,9 @@ public class HorseCustomisationDialog extends JDialog {
     private JComboBox<String> accessoriesComboBox;
     private JComboBox<Integer> laneComboBox; 
     private Set<Integer> selectedLanes = new HashSet<>(); 
+    private Set<Character> selectedSymbols = new HashSet<>();
     int laneNumbers;
     private List<NewHorse> horses;
-    private double[] horseConfidence = {0.1, 0.2, 0.3};
 
     public HorseCustomisationDialog(JFrame parentFrame, int  laneNumbers) {
         super(parentFrame, "Horse Customisation", true);
@@ -44,7 +44,7 @@ public class HorseCustomisationDialog extends JDialog {
         JLabel breedLabel = new JLabel("Breed:");
         constraints.gridy = 2;
         this.add(breedLabel, constraints);
-        String[] breeds = {"Arabian", "Thoroughbred", "Quarter Horse", "Morgan", "Paint", "Appaloosa", "Mustang", "Pony", "Warmblood", "Draft"};
+        String[] breeds = {"Arabian", "Mustang", "Quarter Horse", "Morgan", "Paint", "Appaloosa", "Thoroughbred", "Friesian", "Shetland Pony", "Clydesdale"};
         breedComboBox = new JComboBox<>(breeds);
         breedComboBox.setPreferredSize(preferredSize);
         constraints.gridy = 3;
@@ -54,7 +54,7 @@ public class HorseCustomisationDialog extends JDialog {
         JLabel colourLabel = new JLabel("Coat Colour:");
         constraints.gridy = 4;
         this.add(colourLabel, constraints);
-        String[] colours = {"Black", "White", "Brown", "Grey", "Chestnut", "Bay", "Palomino", "Buckskin", "Dun", "Roan"};
+        String[] colours = {"Black", "Brown", "Grey", "Red", "Blue", "Green", "Yellow", "Purple", "Orange", "Pink"};
         coatColourComboBox = new JComboBox<>(colours);
         coatColourComboBox.setPreferredSize(preferredSize);
         constraints.gridy = 5;
@@ -74,7 +74,7 @@ public class HorseCustomisationDialog extends JDialog {
         JLabel accessoriesLabel = new JLabel("Accessories:");
         constraints.gridy = 8;
         this.add(accessoriesLabel, constraints);
-        String[] accessories = {"boldSymbol", "italicSymbol", "underlineSymbol"};
+        String[] accessories = {"Ribbon", "Bell", "Flower"};
         accessoriesComboBox = new JComboBox<>(accessories);
         accessoriesComboBox.setPreferredSize(preferredSize);
         constraints.gridy = 9;
@@ -101,13 +101,19 @@ public class HorseCustomisationDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 if(horses.size() < laneNumbers){
                     int selectedLane = (int) laneComboBox.getSelectedItem();
+                    char selectedSymbol = (char) SymbolComboBox.getSelectedItem();
                     if (selectedLanes.contains(selectedLane)) {
                         JOptionPane.showMessageDialog(null, "This lane is already occupied. Please select a different lane.");
                         return;
                     }
+                    if (selectedSymbols.contains(selectedSymbol)) {
+                        JOptionPane.showMessageDialog(null, "This symbol is already used. Please select a different symbol.");
+                        return;
+                    }
                     selectedLanes.add(selectedLane);
+                    selectedSymbols.add(selectedSymbol);
                     NewHorse horse = new NewHorse(
-                        (char) SymbolComboBox.getSelectedItem(),
+                        selectedSymbol,
                         "Horse" + (horses.size() + 1),
                         0.1,
                         (String) breedComboBox.getSelectedItem(),
@@ -132,7 +138,11 @@ public class HorseCustomisationDialog extends JDialog {
         // Add an ActionListener to the "Save" button
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                // Check if the user has added at least 2 horses
+                if (horses.size() < 2) {
+                    JOptionPane.showMessageDialog(null, "Please add at least 2 horses.");
+                    return;
+                }
                 // Close the customisation dialog
                 dispose();
             }

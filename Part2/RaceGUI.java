@@ -1,8 +1,11 @@
 import java.util.concurrent.TimeUnit;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.border.Border;
 import javax.swing.BorderFactory;
+import java.util.Random;
+
 /**
  * A horse race, each horse running in its own lane
  * for a given distance
@@ -42,42 +45,21 @@ public class RaceGUI
         // New JDialog for track customisation
         showTrackCustomisation();
         
-        // Initialise panels
-        mainFrame.add(new JButton("Start Button"), BorderLayout.SOUTH);
+        // Initialise button to start
+        JButton startButton = new JButton("Start Button");
+        mainFrame.add(startButton, BorderLayout.SOUTH);
+
+        // Add action listener to the start button
+        startButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                startRaceGUI();
+            }
+        });  
     
         // Set the size of the main frame, make it visible, and prevent resizing
         mainFrame.setSize(raceLength * 50 + 100, 600);
         mainFrame.setResizable(false);
         mainFrame.setVisible(true);
-    }
-    
-    /**
-     * Adds a horse to the race in a given lane
-     * 
-     * @param theHorse the horse to be added to the race
-     * @param laneNumber the lane that the horse will be added to
-     */
-    public void addHorse(NewHorse theHorse, int laneNumber)
-    {
-        boolean added = false;
-        if (laneNumber <= horseList.length && laneNumber > 0)
-        {
-            for (NewHorse horse : horseList) {
-                if (horse != null && (horse.getName().equals(theHorse.getName()) || horse.getSymbol() == theHorse.getSymbol()))
-                {
-                    System.out.println("Cannot add horse to lane " + laneNumber + " because horse " + horse.getName() + " is already in");
-                    added = true;
-                }
-            }
-            if (added == false)
-            {
-                horseList[laneNumber - 1] = theHorse;
-            }
-        }
-        else
-        {
-            System.out.println("Cannot add horse to lane " + laneNumber + " because there is no such lane");
-        }
     }
 
     // Method to show the track customisation dialog
@@ -103,29 +85,53 @@ public class RaceGUI
         horseList = horseDialog.getHorses();
     }
 
+    public void addCustomisationtoHorse(JLabel laneLabel, NewHorse horse) {
+        Random random = new Random();
+
+        // Set the horse's confidence
+        double[] horseConfidence = {0.1, 0.2, 0.3};
+        
+        // Get coat colour, equipment, and accessory using getter methods
+        String coatColour = horse.getCoatColour();
+        String equipment = horse.getEquipment();
+        String accessory = horse.getAccessory();
+        
+        // Set confidence based on equipment
+        double confidence = horseConfidence[random.nextInt(horseConfidence.length)];
+        if (equipment.equals("Shoes")) {
+            confidence += 0.1;
+        } 
+        else if (equipment.equals("Saddle")) {
+            confidence += 0.2;
+        } 
+        else if (equipment.equals("Reins")) {
+            confidence += 0.3;
+        }
+        
+        // Set the horse's confidence
+        horse.setConfidence(confidence);
+        
+        // Determine text style based on accessory
+        String textStyle = "";
+        if (accessory.equals("Ribbon")) {
+            textStyle = "text-decoration:line-through;";
+        } 
+        else if (accessory.equals("Bell")) {
+            textStyle = "font-style:italic;";
+        } 
+        else if (accessory.equals("Flower")) {
+            textStyle = "text-decoration:underline;";
+        }
+        
+        // Apply customisation to the label
+        laneLabel.setText("<html><div style='color:" + coatColour + "; background-color:white; " + textStyle + "'>" + horse.getSymbol() + "</div></html>");
+    }
+
     // Method to customise the main frame
     public void customiseMainFrame() {
         
         showHorseCustomisation();
-        //NewHorse horse1 = new NewHorse('1', "Horse1", 0.5);
-        //NewHorse horse2 = new NewHorse('2', "Horse2", 0.5);
-        //NewHorse horse3 = new NewHorse('3', "Horse3", 0.5);
-        //NewHorse horse4 = new NewHorse('4', "Horse4", 0.5);
-        //NewHorse horse5 = new NewHorse('5', "Horse5", 0.5);
-        //NewHorse horse6 = new NewHorse('6', "Horse6", 0.5);
-        //NewHorse horse7 = new NewHorse('7', "Horse7", 0.5);
-        //NewHorse horse8 = new NewHorse('8', "Horse8", 0.5);
-        //NewHorse horse9 = new NewHorse('9', "Horse9", 0.5);
-        //NewHorse horse10 = new NewHorse('0', "Horse10", 0.5);
 
-        //NewHorse[] horses = {horse1, horse2, horse3, horse4, horse5, horse6, horse7, horse8, horse9, horse10};
-
-        for (NewHorse horse : horseList) {
-            if (horse != null){
-                //addHorse(horse, horse.getHorseNumber());
-            }
-
-        }
         trackPanel = new JPanel();
         trackPanel.setLayout(new GridLayout(horseList.length, 1, 0, 5));
 
@@ -144,8 +150,9 @@ public class RaceGUI
             // Check if the horse at this index is not null
             if (horseList[i] != null) {
                 // Create a label with the horse's symbol
-                JLabel laneLabel = new JLabel(String.valueOf(horseList[i].getSymbol()));
-                laneLabel.setForeground(Color.WHITE);  
+                JLabel laneLabel = new JLabel(String.valueOf(horseList[i].getSymbol())); 
+
+                addCustomisationtoHorse(laneLabel, horseList[i]);
                 
                 // Add the label to the row panel
                 rowPanel.add(laneLabel, BorderLayout.CENTER);
@@ -162,10 +169,8 @@ public class RaceGUI
             }
             trackPanel.add(rowPanel);
         }
-
     }
 
-    
     /**
      * Start the race
      * The horse are brought to the start and
@@ -215,6 +220,7 @@ public class RaceGUI
             //end program if all horses have fallen
             if (allHorsesFallen) {
                 System.out.println("All horses have fallen");
+                JOptionPane.showMessageDialog(null, "All horses have fallen.");
                 break;
             }
         }
@@ -233,7 +239,7 @@ public class RaceGUI
         //so only run if it has not fallen
         for (int i = 0; i < horseList.length; i++) {
             NewHorse horse = horseList[i];
-            if (!horse.hasFallen()) {
+            if (horse != null && !horse.hasFallen()) {
                 if (Math.random() < horse.getConfidence()) {
                     horse.moveForward();
                 }
@@ -243,7 +249,7 @@ public class RaceGUI
                 if (Math.random() < (0.1 * horse.getConfidence() * horse.getConfidence())) {
                     horse.setConfidence(horse.getConfidence() - 0.05);
                     horse.fall();
-                    horseLabels[i].setForeground(Color.RED);
+                    horseLabels[i].setText("X");
                 }
                 // Update the label's position
                 horseLabels[i].setLocation(horse.getDistanceTravelled() * 50, horseLabels[i].getY());
@@ -262,6 +268,8 @@ public class RaceGUI
         if (theHorse.getDistanceTravelled() == raceLength)
         {
             System.out.println("Horse " + theHorse.getName() + " has won and travelled " + theHorse.getDistanceTravelled() + " metres");
+
+            JOptionPane.showMessageDialog(null, theHorse.getName() + " has won!");
 
             theHorse.setConfidence(theHorse.getConfidence() + 0.05);
 
@@ -349,5 +357,13 @@ public class RaceGUI
         {
             System.out.print(aChar);
         }
+    }
+
+    public static void main(String[] args) {
+        
+        RaceGUI race = new RaceGUI();
+
+        race.startRaceGUI();
+        
     }
 }
