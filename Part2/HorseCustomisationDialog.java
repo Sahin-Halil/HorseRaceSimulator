@@ -2,7 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class HorseCustomisationDialog extends JDialog {
     private JComboBox<Character> SymbolComboBox;
@@ -10,19 +12,16 @@ public class HorseCustomisationDialog extends JDialog {
     private JComboBox<String> coatColourComboBox;
     private JComboBox<String> equipmentComboBox;
     private JComboBox<String> accessoriesComboBox;
-    int horseListLength;
+    private JComboBox<Integer> laneComboBox; 
+    private Set<Integer> selectedLanes = new HashSet<>(); 
+    int laneNumbers;
     private List<NewHorse> horses;
     private double[] horseConfidence = {0.1, 0.2, 0.3};
 
-    // fields to return
-    private String breed;
-    private String coatColour;
-    private String equipment;
-
-    public HorseCustomisationDialog(JFrame parentFrame, int  horseListLength) {
+    public HorseCustomisationDialog(JFrame parentFrame, int  laneNumbers) {
         super(parentFrame, "Horse Customisation", true);
         horses = new ArrayList<>();
-        this.horseListLength = horseListLength;
+        this.laneNumbers = laneNumbers;
         initialiseComponents();
     }
 
@@ -81,17 +80,41 @@ public class HorseCustomisationDialog extends JDialog {
         constraints.gridy = 9;
         this.add(accessoriesComboBox, constraints);
         
-        JButton addHorseButton = new JButton("Add Horse");
+        // Lane ComboBox
+        JLabel laneLabel = new JLabel("Lane:");
+        constraints.gridy = 10;
+        this.add(laneLabel, constraints);
+        Integer[] lanes = new Integer[laneNumbers];
+        for (int i = 0; i < laneNumbers; i++) {
+            lanes[i] = i + 1;
+        }
+        laneComboBox = new JComboBox<>(lanes);
+        laneComboBox.setPreferredSize(preferredSize);
         constraints.gridy = 11;
+        this.add(laneComboBox, constraints);
+        
+        JButton addHorseButton = new JButton("Add Horse");
+        constraints.gridy = 12;
         this.add(addHorseButton, constraints);
-
+        
         addHorseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(horses.size() < horseListLength){
+                if(horses.size() < laneNumbers){
+                    int selectedLane = (int) laneComboBox.getSelectedItem();
+                    if (selectedLanes.contains(selectedLane)) {
+                        JOptionPane.showMessageDialog(null, "This lane is already occupied. Please select a different lane.");
+                        return;
+                    }
+                    selectedLanes.add(selectedLane);
                     NewHorse horse = new NewHorse(
                         (char) SymbolComboBox.getSelectedItem(),
                         "Horse" + (horses.size() + 1),
-                        0.1
+                        0.1,
+                        (String) breedComboBox.getSelectedItem(),
+                        (String) coatColourComboBox.getSelectedItem(),
+                        (String) equipmentComboBox.getSelectedItem(),
+                        (String) accessoriesComboBox.getSelectedItem(),
+                        selectedLane 
                     );
                     horses.add(horse);
                     JOptionPane.showMessageDialog(null, "Horse added. Total horses: " + horses.size());
@@ -103,16 +126,12 @@ public class HorseCustomisationDialog extends JDialog {
         
         // Add a "Save" button to the dialog
         JButton saveButton = new JButton("Save");
-        constraints.gridy = 12;
+        constraints.gridy = 13;
         this.add(saveButton, constraints);
 
         // Add an ActionListener to the "Save" button
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Save the values from the sliders and color chooser
-                breed = (String) breedComboBox.getSelectedItem();
-                coatColour = (String) coatColourComboBox.getSelectedItem();
-                equipment = (String) equipmentComboBox.getSelectedItem();
 
                 // Close the customisation dialog
                 dispose();
@@ -132,19 +151,15 @@ public class HorseCustomisationDialog extends JDialog {
         this.setVisible(true);
     }
 
-    public List<NewHorse> getHorses(){
-        return horses;
-    }
-
-    public String getBreed(){
-        return breed;
-    }
-
-    public String getCoatColour(){
-        return coatColour;
-    }
-
-    public String getEquipment(){
-        return equipment;
+    public NewHorse[] getHorses(){
+        NewHorse[] horsesArray = new NewHorse[laneNumbers];
+        int i = 0;
+        int laneNumber = 0;
+        while (i < horses.size()){
+            laneNumber = horses.get(i).getHorseNumber();
+            horsesArray[laneNumber - 1] = horses.get(i);
+            i ++;
+        }
+        return horsesArray;
     }
 }

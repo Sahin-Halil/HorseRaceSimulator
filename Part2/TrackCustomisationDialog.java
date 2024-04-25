@@ -7,7 +7,7 @@ public class TrackCustomisationDialog extends JDialog {
     private JSlider trackLengthSlider;
     private JColorChooser trackColourChooser;
     private int raceLength;
-    private NewHorse[] horseList;
+    private int laneNumbers;
     private Color trackColour;
 
     public TrackCustomisationDialog(JFrame parentFrame) {
@@ -58,9 +58,9 @@ public class TrackCustomisationDialog extends JDialog {
         // Add an ActionListener to the "Save" button
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Save the values from the sliders and color chooser
+                // Save the values from the sliders and colour chooser
                 raceLength = trackLengthSlider.getValue();
-                horseList = new NewHorse[numLanesSlider.getValue()];
+                laneNumbers = numLanesSlider.getValue();
                 trackColour = trackColourChooser.getColor();
 
                 // Close the customisation dialog
@@ -84,8 +84,8 @@ public class TrackCustomisationDialog extends JDialog {
         return raceLength;
     }
 
-    public NewHorse[] getHorseList() {
-        return horseList;
+    public int getLaneNumbers() {
+        return laneNumbers;
     }
 
     public Color getTrackColour() {

@@ -14,6 +14,7 @@ public class RaceGUI
 {
     private NewHorse[] horseList;
     private int raceLength;
+    private int laneNumbers;
 
     // GUI components as fields
     private JFrame mainFrame;
@@ -23,7 +24,6 @@ public class RaceGUI
     // Objects for the customisation dialogs
     private TrackCustomisationDialog trackDialog;
     private HorseCustomisationDialog horseDialog;
-
 
     /**
      * Constructor for objects of class Race
@@ -88,15 +88,23 @@ public class RaceGUI
         
         // After the dialog is closed, you can retrieve the values
         raceLength = trackDialog.getRaceLength();
-        horseList = trackDialog.getHorseList();
-        Color trackColour = trackDialog.getTrackColour();
+        laneNumbers = trackDialog.getLaneNumbers();
         
         // Customise the mainframe with the selected color as a parameter
-        customiseMainFrame(trackColour);
+        customiseMainFrame();
+    }
+    
+    // Method to show the horse customisation dialog
+    public void showHorseCustomisation() {
+        
+        horseDialog = new HorseCustomisationDialog(mainFrame, laneNumbers);
+            
+        //After the dialog is closed, you can retrieve the values
+        horseList = horseDialog.getHorses();
     }
 
     // Method to customise the main frame
-    public void customiseMainFrame(Color trackColour) {
+    public void customiseMainFrame() {
         
         showHorseCustomisation();
         //NewHorse horse1 = new NewHorse('1', "Horse1", 0.5);
@@ -112,13 +120,16 @@ public class RaceGUI
 
         //NewHorse[] horses = {horse1, horse2, horse3, horse4, horse5, horse6, horse7, horse8, horse9, horse10};
 
-        //for (int i = 0; i < horses.length; i++){
-            //addHorse(horses[i], i + 1);
-        //}
+        for (NewHorse horse : horseList) {
+            if (horse != null){
+                //addHorse(horse, horse.getHorseNumber());
+            }
+
+        }
         trackPanel = new JPanel();
         trackPanel.setLayout(new GridLayout(horseList.length, 1, 0, 5));
 
-         // Create a border and set it to the track panel
+        // Create a border and set it to the track panel
         Border border = BorderFactory.createLineBorder(Color.BLACK, 10); 
         trackPanel.setBorder(border);
         mainFrame.add(trackPanel, BorderLayout.CENTER);
@@ -128,33 +139,32 @@ public class RaceGUI
         for (int i = 0; i < horseList.length; i++) {
             JPanel rowPanel = new JPanel();
             rowPanel.setLayout(new BorderLayout());
-            rowPanel.setBackground(trackColour);
-
-            // Create a label with the horse's symbol
-            JLabel laneLabel = new JLabel(String.valueOf(horseList[i].getSymbol()));
-            laneLabel.setForeground(Color.WHITE); 
-
-            // Add the label to the row panel
-            rowPanel.add(laneLabel, BorderLayout.CENTER);
-            trackPanel.add(rowPanel);
-
-            horseLabels[i] = laneLabel; // Store the reference to the label
-        }
-    }
-
-    // Method to show the horse customisation dialog
-    public void showHorseCustomisation() {
-        
-        horseDialog = new HorseCustomisationDialog(mainFrame, horseList.length);
+            rowPanel.setBackground(trackDialog.getTrackColour());
             
-        
-        // After the dialog is closed, you can retrieve the values
-        //NewHorse horse = dialog.getHorse();
-        //int laneNumber = dialog.getLaneNumber();
-        
-        // Add the horse to
-        //addHorse(horse, laneNumber);
+            // Check if the horse at this index is not null
+            if (horseList[i] != null) {
+                // Create a label with the horse's symbol
+                JLabel laneLabel = new JLabel(String.valueOf(horseList[i].getSymbol()));
+                laneLabel.setForeground(Color.WHITE);  
+                
+                // Add the label to the row panel
+                rowPanel.add(laneLabel, BorderLayout.CENTER);
+                horseLabels[i] = laneLabel; 
+            } 
+            else {
+                // Create a placeholder label for empty lanes
+                JLabel laneLabel = new JLabel("");
+                laneLabel.setForeground(Color.WHITE);  
+                
+                // Add the placeholder label to the row panel
+                rowPanel.add(laneLabel, BorderLayout.CENTER);
+                horseLabels[i] = laneLabel; 
+            }
+            trackPanel.add(rowPanel);
+        }
+
     }
+
     
     /**
      * Start the race

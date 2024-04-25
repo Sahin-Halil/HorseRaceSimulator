@@ -13,12 +13,19 @@ public class NewHorse
     private int distanceTravelled;
     private boolean horseFallen;
     private char horseSymbol;
+
+    //GUI components
+    private String breed;
+    private String coatColour;
+    private String equipment;
+    private String accessory;
+    private int horseNumber;
       
     //Constructor of class Horse
     /**
      * Constructor for objects of class Horse
      */
-    public NewHorse(char horseSymbol, String horseName, double horseConfidence)
+    public NewHorse(char horseSymbol, String horseName, double horseConfidence, String breed, String coatColour, String equipment, String accessory, int horseNumber)
     {
         this.horseName = horseName;
         if (horseConfidence <= 0)
@@ -35,6 +42,13 @@ public class NewHorse
         this.distanceTravelled = 0;
         this.horseFallen = false;
         this.horseSymbol = horseSymbol;
+
+        //GUI components
+        this.breed = breed;
+        this.coatColour = coatColour;
+        this.equipment = equipment;
+        this.accessory = accessory;
+        this.horseNumber = horseNumber;
     }
     
     //Other methods of class Horse
@@ -97,5 +111,26 @@ public class NewHorse
     public void setSymbol(char newSymbol)
     {
         horseSymbol = newSymbol;
+    }
+
+    //GUI components
+    public String getBreed(){
+        return breed;
+    }
+
+    public String getCoatColour(){
+        return coatColour;
+    }
+
+    public String getEquipment(){
+        return equipment;
+    }
+
+    public String getAccessory(){
+        return accessory;
+    }
+
+    public int getHorseNumber(){
+        return horseNumber;
     }
 }
