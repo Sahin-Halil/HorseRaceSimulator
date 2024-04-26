@@ -27,6 +27,7 @@ public class RaceGUI
     // Objects for the customisation dialogs
     private TrackCustomisationDialog trackDialog;
     private HorseCustomisationDialog horseDialog;
+    private BettingSystemDialog bettingDialog;
 
     /**
      * Constructor for objects of class Race
@@ -44,6 +45,7 @@ public class RaceGUI
         
         // New JDialog for track customisation
         showTrackCustomisation();
+        showBettings();
         
         // Initialise button to start
         JButton startButton = new JButton("Start Button");
@@ -53,7 +55,6 @@ public class RaceGUI
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-                    
                     protected Void doInBackground() throws Exception {
                         startRaceGUI();
                         return null;
@@ -176,6 +177,10 @@ public class RaceGUI
             }
             trackPanel.add(rowPanel);
         }
+    }
+
+    public void showBettings() {
+        bettingDialog = new BettingSystemDialog(mainFrame, horseList);
     }
 
     /**
@@ -373,8 +378,6 @@ public class RaceGUI
     public static void main(String[] args) {
         
         RaceGUI race = new RaceGUI();
-
-        //race.startRaceGUI();
         
     }
 }

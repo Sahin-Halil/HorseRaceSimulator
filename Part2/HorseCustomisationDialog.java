@@ -124,7 +124,8 @@ public class HorseCustomisationDialog extends JDialog {
                     );
                     horses.add(horse);
                     JOptionPane.showMessageDialog(null, "Horse added. Total horses: " + horses.size());
-                } else {
+                } 
+                else {
                     JOptionPane.showMessageDialog(null, "Cannot add more than " + horses.size() + " horses.");
                 }
             }
