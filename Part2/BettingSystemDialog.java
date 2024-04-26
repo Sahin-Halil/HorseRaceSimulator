@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 
-
 public class BettingSystemDialog extends JDialog {
     private JTextField betField;
     private JComboBox<String> horseBox;
@@ -14,7 +13,8 @@ public class BettingSystemDialog extends JDialog {
     private Map<String, Integer> betAmounts = new HashMap<>();
     private Map<String, JLabel> betLabels = new HashMap<>();
     private JLabel totalBetLabel;
-    private  int amountLeft = 100;
+    private int amountLeft = 100;
+    private HashMap<String, Double> horseOdds = new HashMap<>();
 
     public BettingSystemDialog(JFrame parentFrame, NewHorse[] horseList) {
         super(parentFrame, "Betting System", true);
@@ -136,6 +136,13 @@ public class BettingSystemDialog extends JDialog {
             }
         });
 
+        // Add the horse odds to a map
+        for (NewHorse horse : horseList) {
+            if (horse != null) {
+                horseOdds.put(horse.getName(), (double) Math.round(horse.getConfidence() * 100));
+            }
+        }
+
         // Add a WindowListener to handle the window closing event
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -147,5 +154,13 @@ public class BettingSystemDialog extends JDialog {
         // Set the size of the dialog and make it visible
         this.pack();
         this.setVisible(true);
+    }
+
+    public HashMap<String, Double> getHorseOdds() {
+        return horseOdds;
+    }
+
+    public void setHorseOdds(HashMap<String, Double> horseOdds) {
+        this.horseOdds = horseOdds;
     }
 }

@@ -18,6 +18,7 @@ public class RaceGUI
     private NewHorse[] horseList;
     private int raceLength;
     private int laneNumbers;
+    private int numberOfGames = 0;
 
     // GUI components as fields
     private JFrame mainFrame;
@@ -75,9 +76,12 @@ public class RaceGUI
         // Add action listener to the metrics button
         metricsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                
+                showHorseMetrics();
             }
         });
+
+        // Add the button panel to the main frame
+        mainFrame.add(buttonPanel, BorderLayout.SOUTH);
     
         // Set the size of the main frame, make it visible, and prevent resizing
         mainFrame.setSize(raceLength * 50 + 100, 600);
@@ -198,6 +202,10 @@ public class RaceGUI
         bettingDialog = new BettingSystemDialog(mainFrame, horseList);
     }
 
+    public void showHorseMetrics() {
+        
+    }
+
     /**
      * Start the race
      * The horse are brought to the start and
@@ -216,7 +224,6 @@ public class RaceGUI
             }
         }
 
-        
         while (!finished)
         {
             //check if all horses have fallen
@@ -252,6 +259,11 @@ public class RaceGUI
                 break;
             }
         }
+        
+        //increment the number of games
+        numberOfGames++;
+
+        // Reapply customisation to the horses
         for (int i = 0; i < horseList.length; i++) {
             addCustomisationtoHorse(horseLabels[i], horseList[i]);
         }
@@ -274,10 +286,10 @@ public class RaceGUI
                 if (Math.random() < horse.getConfidence()) {
                     horse.moveForward();
                 }
-                //the probability that the horse will fall is very small (max is 0.1)
+                //the probability that the horse will fall is very small (max is 0.05)
                 //but will also will depends exponentially on confidence 
                 //so if you double the confidence, the probability that it will fall is *2
-                if (Math.random() < (0.1 * horse.getConfidence() * horse.getConfidence())) {
+                if (Math.random() < (0.05 * horse.getConfidence() * horse.getConfidence())) {
                     horse.setConfidence(horse.getConfidence() - 0.05);
                     horse.fall();
                     horseLabels[i].setText("X");
@@ -303,6 +315,7 @@ public class RaceGUI
             JOptionPane.showMessageDialog(null, theHorse.getName() + " has won and travelled " + theHorse.getDistanceTravelled() + " metres.");
 
             theHorse.setConfidence(theHorse.getConfidence() + 0.05);
+            theHorse.setWinNumber(theHorse.getWinNumber() + 1);
 
             return true;
         }
@@ -312,84 +325,6 @@ public class RaceGUI
         }
     }
     
-    /***
-     * Print the race on the terminal
-     */
-    private void printRace()
-    {
-        System.out.print('\u000C');  //clear the terminal window
-        
-        multiplePrint('=',raceLength+3); //top edge of track
-        System.out.println();
-        
-        for (NewHorse horse : horseList) {
-            printLane(horse);
-            System.out.println();
-        }
-        
-        multiplePrint('=',raceLength+3); //bottom edge of track
-        System.out.println();    
-    }
-    
-    /**
-     * print a horse's lane during the race
-     * for example
-     * |           X                      |
-     * to show how far the horse has run
-     */
-    private void printLane(NewHorse theHorse)
-    {
-        //calculate how many spaces are needed before
-        //and after the horse
-        int spacesBefore = raceLength;
-        int spacesAfter = 1;
-        if (theHorse != null)
-        {
-            spacesBefore = theHorse.getDistanceTravelled();
-            spacesAfter = raceLength - theHorse.getDistanceTravelled();
-        }
-        
-        //print a | for the beginning of the lane
-        System.out.print('|');
-        
-        //print the spaces before the horse
-        multiplePrint(' ',spacesBefore);
-        
-        //if the horse has fallen then print dead
-        //else print the horse's symbol
-        if (theHorse != null){
-            if(theHorse.hasFallen())
-            {
-                System.out.print('\u2322');
-            }
-            else
-            {
-                System.out.print(theHorse.getSymbol());
-            }
-        }
-        
-        //print the spaces after the horse
-        multiplePrint(' ',spacesAfter);
-        
-        //print the | for the end of the track
-        System.out.print('|');
-    }
-        
-    
-    /***
-     * print a character a given number of times.
-     * e.g. printmany('x',5) will print: xxxxx
-     * 
-     * @param aChar the character to Print
-     */
-    private void multiplePrint(char aChar, int times)
-    {
-        for (int i = 0; i < times; i++)
-        {
-            System.out.print(aChar);
-        }
-    }
-
     public static void main(String[] args) {
         
         RaceGUI race = new RaceGUI();

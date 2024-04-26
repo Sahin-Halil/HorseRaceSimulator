@@ -20,6 +20,7 @@ public class NewHorse
     private String equipment;
     private String accessory;
     private int horseNumber;
+    private int winNumber;
       
     //Constructor of class Horse
     /**
@@ -49,6 +50,7 @@ public class NewHorse
         this.equipment = equipment;
         this.accessory = accessory;
         this.horseNumber = horseNumber;
+        this.winNumber = 0;
     }
     
     //Other methods of class Horse
@@ -132,5 +134,13 @@ public class NewHorse
 
     public int getHorseNumber(){
         return horseNumber;
+    }
+
+    public int getWinNumber(){
+        return winNumber;
+    }
+
+    public void setWinNumber(int winNumber){
+        this.winNumber = winNumber;
     }
 }
