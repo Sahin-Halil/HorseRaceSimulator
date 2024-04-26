@@ -21,6 +21,8 @@ public class NewHorse
     private String accessory;
     private int horseNumber;
     private int winNumber;
+    private double horseOdds;
+    private double winRatio;
       
     //Constructor of class Horse
     /**
@@ -51,6 +53,8 @@ public class NewHorse
         this.accessory = accessory;
         this.horseNumber = horseNumber;
         this.winNumber = 0;
+        this.horseOdds = 0;
+        this.winRatio = 0;
     }
     
     //Other methods of class Horse
@@ -142,5 +146,21 @@ public class NewHorse
 
     public void setWinNumber(int winNumber){
         this.winNumber = winNumber;
+    }
+
+    public double getHorseOdds(){
+        return horseOdds;
+    }
+
+    public void setHorseOdds(double horseOdds){
+        this.horseOdds = horseOdds;
+    }
+
+    public double getWinRatio(){
+        return winRatio;
+    }
+
+    public void setWinRatio(double winRatio){
+        this.winRatio = winRatio;
     }
 }

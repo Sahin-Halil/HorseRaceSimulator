@@ -14,7 +14,6 @@ public class BettingSystemDialog extends JDialog {
     private Map<String, JLabel> betLabels = new HashMap<>();
     private JLabel totalBetLabel;
     private int amountLeft = 100;
-    private HashMap<String, Double> horseOdds = new HashMap<>();
 
     public BettingSystemDialog(JFrame parentFrame, NewHorse[] horseList) {
         super(parentFrame, "Betting System", true);
@@ -39,7 +38,8 @@ public class BettingSystemDialog extends JDialog {
         for (NewHorse horse : horseList) {
             if (horse != null) {
                 constraints.gridy++;
-                JLabel betLabel = new JLabel(horse.getName() + ": " + betAmounts.get(horse.getName()) + " " + "odds: " + Double.parseDouble(String.format("%.2f", horse.getConfidence() * 100)) + "%");
+                horse.setHorseOdds(horse.getConfidence() * Math.random());
+                JLabel betLabel = new JLabel(horse.getName() + ": " + betAmounts.get(horse.getName()) + " " + "odds: " + Double.parseDouble(String.format("%.2f", horse.getHorseOdds() * 100)) + "%");
                 this.add(betLabel, constraints);
                 betLabels.put(horse.getName(), betLabel);
             }
@@ -69,7 +69,7 @@ public class BettingSystemDialog extends JDialog {
         constraints.gridy ++;
         this.add(new JLabel("Enter Bet Amount:"), constraints);
         betField = new JTextField("100", 5);
-        betField.setPreferredSize(preferredSize);
+        //betField.setPreferredSize(preferredSize);
         constraints.gridy ++;
         this.add(betField, constraints);
 
@@ -110,7 +110,7 @@ public class BettingSystemDialog extends JDialog {
 
                     // Update the horse's confidence based on the bet amount
                     selectedHorse.setConfidence(selectedHorse.getConfidence() + betAmount * 0.001);
-                    double rating = Double.parseDouble(String.format("%.2f", selectedHorse.getConfidence() * 100));
+                    double rating = Double.parseDouble(String.format("%.2f", selectedHorse.getHorseOdds() + betAmount * 0.001));
                     
                     // Update the bet amounts for the selected horse
                     betAmounts.put(selectedHorse.getName(), betAmounts.get(selectedHorse.getName()) + betAmount);
@@ -118,8 +118,11 @@ public class BettingSystemDialog extends JDialog {
                     // Update the total bet amount
                     amountLeft -= betAmount;
 
+                    // Update the horses odds field
+                    selectedHorse.setHorseOdds(rating);
+
                     // Update the bet amounts label
-                    betLabels.get(selectedHorse.getName()).setText(selectedHorse.getName() + ": " + betAmounts.get(selectedHorse.getName()) + " " + "odds: " + rating + "%");
+                    betLabels.get(selectedHorse.getName()).setText(selectedHorse.getName() + ": " + betAmounts.get(selectedHorse.getName()) + " " + "odds: " + rating  * 100 + "%");
 
                     // Update the total bet amount label
                     totalBetLabel.setText("Total Bet Amount: " + amountLeft);
@@ -136,13 +139,6 @@ public class BettingSystemDialog extends JDialog {
             }
         });
 
-        // Add the horse odds to a map
-        for (NewHorse horse : horseList) {
-            if (horse != null) {
-                horseOdds.put(horse.getName(), (double) Math.round(horse.getConfidence() * 100));
-            }
-        }
-
         // Add a WindowListener to handle the window closing event
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -154,13 +150,5 @@ public class BettingSystemDialog extends JDialog {
         // Set the size of the dialog and make it visible
         this.pack();
         this.setVisible(true);
-    }
-
-    public HashMap<String, Double> getHorseOdds() {
-        return horseOdds;
-    }
-
-    public void setHorseOdds(HashMap<String, Double> horseOdds) {
-        this.horseOdds = horseOdds;
     }
 }

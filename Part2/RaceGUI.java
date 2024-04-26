@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.border.Border;
-import javax.swing.BorderFactory;
+
 import java.util.Random;
 
 /**
@@ -24,6 +24,7 @@ public class RaceGUI
     private JFrame mainFrame;
     private JPanel trackPanel;
     private JLabel[] horseLabels;
+    private JLabel[] horseLabelsCopy;
 
     // Objects for the customisation dialogs
     private TrackCustomisationDialog trackDialog;
@@ -55,12 +56,16 @@ public class RaceGUI
          // Initialise button to start
         JButton startButton = new JButton("Start Race");
         buttonPanel.add(startButton);
+        
+        // Initialise button for horse metrics
+        JButton metricsButton = new JButton("Horse Metrics");
+        buttonPanel.add(metricsButton);
 
-        // Add action listener to the start button
         startButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
                     protected Void doInBackground() throws Exception {
+                        // Perform long-running task here (outside the EDT)
                         startRaceGUI();
                         return null;
                     }
@@ -68,15 +73,18 @@ public class RaceGUI
                 worker.execute();
             }
         });
-
-        // Initialise button for horse metrics
-        JButton metricsButton = new JButton("Horse Metrics");
-        buttonPanel.add(metricsButton);
+        
 
         // Add action listener to the metrics button
         metricsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                showHorseMetrics();
+                SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                    protected Void doInBackground() throws Exception {
+                        showHorseMetrics();
+                        return null;
+                    }
+                };
+                worker.execute();
             }
         });
 
@@ -167,6 +175,7 @@ public class RaceGUI
         trackPanel.setBorder(border);
         mainFrame.add(trackPanel, BorderLayout.CENTER);
         horseLabels = new JLabel[horseList.length]; 
+        horseLabelsCopy = new JLabel[horseList.length];
 
         // Add the lanes to the track panel
         for (int i = 0; i < horseList.length; i++) {
@@ -184,6 +193,9 @@ public class RaceGUI
                 // Add the label to the row panel
                 rowPanel.add(laneLabel, BorderLayout.CENTER);
                 horseLabels[i] = laneLabel; 
+
+                // Add the label to the copy array
+                horseLabelsCopy[i] = new JLabel(horseLabels[i].getText());
             } 
             else {
                 // Create a placeholder label for empty lanes
@@ -193,6 +205,9 @@ public class RaceGUI
                 // Add the placeholder label to the row panel
                 rowPanel.add(laneLabel, BorderLayout.CENTER);
                 horseLabels[i] = laneLabel; 
+
+                // Add the placeholder label to the copy array
+                horseLabelsCopy[i] = new JLabel(horseLabels[i].getText());
             }
             trackPanel.add(rowPanel);
         }
@@ -203,7 +218,44 @@ public class RaceGUI
     }
 
     public void showHorseMetrics() {
+        JFrame metricsFrame = new JFrame("Horse Metrics");
+        metricsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        metricsFrame.setLayout(new GridLayout(horseList.length, 1, 0, 5));
         
+        // Add the lanes to the metrics frame
+        for (int i = 0; i < horseList.length; i++) {
+            JPanel rowPanel = new JPanel();
+            rowPanel.setLayout(new BorderLayout());
+            rowPanel.setBackground(trackDialog.getTrackColour());
+            
+            // Check if the horse at this index is not null
+            if (horseList[i] != null) {
+    
+                // Create a label with the horse's metrics
+                JLabel metricsLabel = new JLabel(horseList[i].getName() + ", Confidence: " + String.format("%.2f", horseList[i].getConfidence()) + ", Odds: " + String.format("%.2f", horseList[i].getHorseOdds() * 100) + "%, Win Ratio: " + String.format("%.2f", horseList[i].getWinRatio()) + ", Distance: " + horseList[i].getDistanceTravelled() + "m");
+                
+                // Add the metrics label to the row panel
+                rowPanel.add(metricsLabel, BorderLayout.EAST);
+
+                // Add the horse label copy to the row panel at the start of its lane
+                rowPanel.add(new JLabel(horseLabelsCopy[i].getText()), BorderLayout.WEST);
+            } 
+        
+            metricsFrame.add(rowPanel);
+        }
+
+        // Add a WindowListener to handle the window closing event
+        metricsFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                // Terminate the program
+                metricsFrame.dispose();
+            }
+        });
+        
+        // Set the size of the metrics frame, make it visible, and prevent resizing
+        metricsFrame.setSize(raceLength * 50 + 100, 600);
+        metricsFrame.setResizable(false);
+        metricsFrame.setVisible(true);
     }
 
     /**
@@ -224,6 +276,16 @@ public class RaceGUI
             }
         }
 
+        //increment the number of games
+        numberOfGames++;
+
+        // Update win ratio for all horses
+        for (NewHorse horse : horseList) {
+            if (horse != null) {
+                horse.setWinRatio((double) horse.getWinNumber() / numberOfGames);
+            }
+        }
+
         while (!finished)
         {
             //check if all horses have fallen
@@ -237,8 +299,6 @@ public class RaceGUI
             
             //move each horse
             moveHorse();
-            
-            //printRace();
             
             //if any of the horses has won the race is finished
             for (NewHorse horse : horseList) {
@@ -259,13 +319,9 @@ public class RaceGUI
                 break;
             }
         }
-        
-        //increment the number of games
-        numberOfGames++;
-
-        // Reapply customisation to the horses
-        for (int i = 0; i < horseList.length; i++) {
-            addCustomisationtoHorse(horseLabels[i], horseList[i]);
+        // Apply horse labels to the track panel
+        for (int i = 0; i < horseLabels.length; i++) {    
+                horseLabels[i].setText(horseLabelsCopy[i].getText());
         }
     }
     
@@ -291,6 +347,7 @@ public class RaceGUI
                 //so if you double the confidence, the probability that it will fall is *2
                 if (Math.random() < (0.05 * horse.getConfidence() * horse.getConfidence())) {
                     horse.setConfidence(horse.getConfidence() - 0.05);
+                    horse.setHorseOdds(horse.getHorseOdds() - 0.025);
                     horse.fall();
                     horseLabels[i].setText("X");
                 }
@@ -314,8 +371,11 @@ public class RaceGUI
 
             JOptionPane.showMessageDialog(null, theHorse.getName() + " has won and travelled " + theHorse.getDistanceTravelled() + " metres.");
 
+            // Update the horse's metrics
             theHorse.setConfidence(theHorse.getConfidence() + 0.05);
             theHorse.setWinNumber(theHorse.getWinNumber() + 1);
+            theHorse.setWinRatio( (double) theHorse.getWinNumber() / numberOfGames);
+            theHorse.setHorseOdds(theHorse.getHorseOdds() + 0.025);
 
             return true;
         }
