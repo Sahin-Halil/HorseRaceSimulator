@@ -2,10 +2,17 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.border.Border;
-
 import java.util.Random;
-
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 /**
  * A horse race, each horse running in its own lane
  * for a given distance
@@ -88,6 +95,23 @@ public class RaceGUI
             }
         });
 
+        // View past horse metrics button
+        JButton pastHButton = new JButton("Past Horse Metrics");
+        buttonPanel.add(pastHButton);
+        
+        // Add action listener to the past horse metrics button
+        pastHButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                    protected Void doInBackground() throws Exception {
+                        readRaceData();
+                        return null;
+                    }
+                };
+                worker.execute();
+            }
+        });
+        
         // Add the button panel to the main frame
         mainFrame.add(buttonPanel, BorderLayout.SOUTH);
     
@@ -319,10 +343,66 @@ public class RaceGUI
                 break;
             }
         }
+
         // Apply horse labels to the track panel
         for (int i = 0; i < horseLabels.length; i++) {    
                 horseLabels[i].setText(horseLabelsCopy[i].getText());
         }
+
+        // After the race is finished
+        for (NewHorse horse : horseList) {
+            if (horse != null) {
+                // Create a string with the horse's data
+                String horseData = horse.getName() + ", Confidence: " + String.format("%.2f", horse.getConfidence()) + ", Odds: " + String.format("%.2f", horse.getHorseOdds() * 100) + "%, Win Ratio: " + String.format("%.2f", horse.getWinRatio()) + ", Distance: " + horse.getDistanceTravelled() + "metres" + "\n";
+
+                // Write the data to a file
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter("Part2/race_results.txt", true))) {
+                    writer.write(horseData);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // Write a separator line to the file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Part2/race_results.txt", true))) {
+            writer.write("--------------------------------------------------\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void readRaceData() {
+        JTextArea textArea = new JTextArea();
+        JDialog dialog = new JDialog(mainFrame, "Past Horse Metrics", true);
+        dialog.setLayout(new BorderLayout());
+        dialog.add(new JScrollPane(textArea), BorderLayout.CENTER);
+        dialog.setSize(500, 500);
+    
+        SwingWorker<Void, String> worker = new SwingWorker<Void, String>() {
+            protected Void doInBackground() throws Exception {
+                try (BufferedReader reader = new BufferedReader(new FileReader("Part2/race_results.txt"))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        publish(line);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+    
+            protected void process(List<String> chunks) {
+                for (String line : chunks) {
+                    textArea.append(line + "\n");
+                }
+            }
+    
+            protected void done() {
+                dialog.setVisible(true);
+            }
+        };
+        worker.execute();
     }
     
     /**

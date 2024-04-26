@@ -1,0 +1,7 @@
+
+Horse1, Confidence: 0.35, Odds: 36.50%, Win Ratio: 0.00, Distance: 23metres
+Horse2, Confidence: 0.25, Odds: 14.38%, Win Ratio: 1.00, Distance: 25metres
+--------------------------------------------------
+Horse1, Confidence: 0.30, Odds: 34.00%, Win Ratio: 0.00, Distance: 1metres
+Horse2, Confidence: 0.30, Odds: 16.88%, Win Ratio: 1.00, Distance: 25metres
+--------------------------------------------------
