@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 
+
 public class BettingSystemDialog extends JDialog {
     private JTextField betField;
     private JComboBox<String> horseBox;
@@ -38,7 +39,7 @@ public class BettingSystemDialog extends JDialog {
         for (NewHorse horse : horseList) {
             if (horse != null) {
                 constraints.gridy++;
-                JLabel betLabel = new JLabel(horse.getName() + ": " + betAmounts.get(horse.getName()));
+                JLabel betLabel = new JLabel(horse.getName() + ": " + betAmounts.get(horse.getName()) + " " + "odds: " + Double.parseDouble(String.format("%.2f", horse.getConfidence() * 100)) + "%");
                 this.add(betLabel, constraints);
                 betLabels.put(horse.getName(), betLabel);
             }
@@ -107,18 +108,18 @@ public class BettingSystemDialog extends JDialog {
                         return;
                     }
 
+                    // Update the horse's confidence based on the bet amount
+                    selectedHorse.setConfidence(selectedHorse.getConfidence() + betAmount * 0.001);
+                    double rating = Double.parseDouble(String.format("%.2f", selectedHorse.getConfidence() * 100));
+                    
                     // Update the bet amounts for the selected horse
                     betAmounts.put(selectedHorse.getName(), betAmounts.get(selectedHorse.getName()) + betAmount);
                     
                     // Update the total bet amount
                     amountLeft -= betAmount;
 
-                    // Update the bet amounts labels
-                    for (NewHorse horse : horseList) {
-                        if (horse != null) {
-                            betLabels.get(horse.getName()).setText(horse.getName() + ": " + betAmounts.get(horse.getName()));
-                        }
-                    }
+                    // Update the bet amounts label
+                    betLabels.get(selectedHorse.getName()).setText(selectedHorse.getName() + ": " + betAmounts.get(selectedHorse.getName()) + " " + "odds: " + rating + "%");
 
                     // Update the total bet amount label
                     totalBetLabel.setText("Total Bet Amount: " + amountLeft);

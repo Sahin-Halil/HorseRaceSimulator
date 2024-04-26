@@ -46,10 +46,14 @@ public class RaceGUI
         // New JDialog for track customisation
         showTrackCustomisation();
         showBettings();
+
+        // Panel to hold buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         
-        // Initialise button to start
-        JButton startButton = new JButton("Start Button");
-        mainFrame.add(startButton, BorderLayout.SOUTH);
+         // Initialise button to start
+        JButton startButton = new JButton("Start Race");
+        buttonPanel.add(startButton);
 
         // Add action listener to the start button
         startButton.addActionListener(new ActionListener() {
@@ -61,6 +65,17 @@ public class RaceGUI
                     }
                 };
                 worker.execute();
+            }
+        });
+
+        // Initialise button for horse metrics
+        JButton metricsButton = new JButton("Horse Metrics");
+        buttonPanel.add(metricsButton);
+
+        // Add action listener to the metrics button
+        metricsButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                
             }
         });
     
