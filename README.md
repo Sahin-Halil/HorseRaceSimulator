@@ -30,8 +30,6 @@ In order for the code to compile, make sure you:
 - Set up the Java environment variables. Add the JDK bin directory to the system's PATH variable.
 - Install the Java Extension Pack in Visual Studio Code. This extension pack includes essential extensions for Java development.
 - Open the project folder in Visual Studio Code.
-- Create a new file named `settings.json` in the `.vscode` directory of your project.
-- Add the following configuration to `settings.json` to specify the Java home path:
 
 
 
